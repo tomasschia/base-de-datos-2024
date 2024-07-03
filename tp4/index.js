@@ -8,9 +8,48 @@ import canciones from "./controllers/canciones.js";
 
 app.use(express.json());
 
+import {conn} from './db.js';
+
+//Checkeo conexionS
+async function testConnection() {
+    try {
+      const connection = await conn;
+      console.log('se ha conectado a la base orrectamente ');
+      
+    } catch (err) {
+      console.error('la conexion ha fallado!, error: ', err);
+    }
+  }
+  
+  testConnection();
+
 app.get("/", (_, res) => {
     res.send("SpoTICfy API working!");
 });
+// Artistas
+app.get("/artistas", artistas.getArtistas);
+app.get("/artistas/:id", artistas.getArtista);
+app.post("/createArtista", artistas.createArtista);
+app.put("/updateArtista/:id", artistas.updateArtista);
+app.delete("/deleteArtista/:id", artistas.deleteArtista);
+app.get("/artistas/canciones/:id", artistas.getCancionesByArtista); 
+app.get("/artistas/albumes/:id", artistas.getAlbumesByArtista);
+
+// Albumes 
+app.get("/albumes", albumes.getAlbumes);
+app.get("/albumes/:id", albumes.getAlbum);
+app.post("/createAlbum", albumes.createAlbum);
+app.put("/updateAlbum/:id", albumes.updateAlbum);
+app.delete("/deleteAlbum/:id", albumes.deleteAlbum);
+app.get("/albumes/artista/:id", albumes.getCancionesByAlbum)
+
+// Canciones
+app.get("/canciones", canciones.getCanciones);
+app.get("/canciones/:id", canciones.getCancion);
+app.post("/createCancion", canciones.createCancion);
+app.put("/updateCancion/:id", canciones.updateCancion);
+app.delete("/deleteCancion/:id", canciones.deleteCancion);
+app.put("/canciones/artista/:id", canciones.reproducirCancion);
 
 /* ------------------- Rutas ------------------- */
 

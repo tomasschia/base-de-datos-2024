@@ -163,3 +163,5 @@ const artistas = {
 };
 
 export default artistas;
+}
+

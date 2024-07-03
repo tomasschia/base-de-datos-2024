@@ -25,6 +25,15 @@ const getCanciones = async (_, res) => {
             ...
         ]
     */
+   const canciones = (await conn.query(`
+            SELECT canciones.id, canciones.nombre, artistas.nombre AS nombre_artista, 
+                   albumes.nombre AS nombre_album, canciones.duracion, 
+                   canciones.reproducciones
+            FROM canciones
+            JOIN albumes ON canciones.album = albumes.id
+            JOIN artistas ON albumes.artista = artistas.id
+        `))[0];
+        res.json(canciones);
 };
 
 const getCancion = async (req, res) => {
@@ -41,6 +50,17 @@ const getCancion = async (req, res) => {
             "reproducciones": "Reproducciones de la canción"
         }
     */
+   const { id } = req.params;
+        const cancion = (await conn.query(`
+            SELECT canciones.id, canciones.nombre, artistas.nombre AS nombre_artista, 
+                   albumes.nombre AS nombre_album, canciones.duracion, 
+                   canciones.reproducciones
+            FROM canciones
+            JOIN albumes ON canciones.album = albumes.id
+            JOIN artistas ON albumes.artista = artistas.id
+            WHERE canciones.id = ?
+        `, [id]))[0][0];
+        res.json(cancion);
 };
 
 const createCancion = async (req, res) => {
@@ -55,6 +75,12 @@ const createCancion = async (req, res) => {
         }
     */
     // (Reproducciones se inicializa en 0)
+    const { nombre, album, duracion } = req.body;
+        await conn.query(`
+            INSERT INTO canciones (nombre, album, duracion, reproducciones) 
+            VALUES (?, ?, ?, 0)
+        `, [nombre, album, duracion]);
+        res.status(201).json({ message: 'Cancion creada' });
 };
 
 const updateCancion = async (req, res) => {
@@ -69,16 +95,35 @@ const updateCancion = async (req, res) => {
         }
     */
     // (Reproducciones no se puede modificar con esta consulta)
+    const { id } = req.params;
+        const { nombre, album, duracion } = req.body;
+        await conn.query(`
+            UPDATE canciones 
+            SET nombre = ?, album = ?, duracion = ? 
+            WHERE id = ?
+        `, [nombre, album, duracion, id]);
+        res.json({ message: 'Cancion cambiada' })
 };
 
 const deleteCancion = async (req, res) => {
     // Completar con la consulta que elimina una canción
     // Recordar que los parámetros de una consulta DELETE se encuentran en req.params
+    const { id } = req.params;
+        await conn.query("DELETE FROM canciones WHERE id = ?", [id]);
+        res.json({ message: 'Cancion borrada' });
 };
+
 
 const reproducirCancion = async (req, res) => {
     // Completar con la consulta que aumenta las reproducciones de una canción
     // En este caso es una consulta PUT, pero no recibe ningún parámetro en el body, solo en los params
+    const { id } = req.params;
+        await conn.query(`
+            UPDATE canciones 
+            SET reproducciones = reproducciones + 1 
+            WHERE id = ?
+        `, [id]);
+        res.json({ message: 'Cancion reproducida' });
 };
 
 const canciones = {
