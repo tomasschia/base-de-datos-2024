@@ -8,26 +8,11 @@ import canciones from "./controllers/canciones.js";
 
 app.use(express.json());
 
-import {conn} from './db.js';
-
-//Checkeo conexionS
-async function testConnection() {
-    try {
-      const connection = await conn;
-      console.log('se ha conectado a la base orrectamente ');
-      
-    } catch (err) {
-      console.error('la conexion ha fallado!, error: ', err);
-    }
-  }
-  
-  testConnection();
-
 app.get("/", (_, res) => {
     res.send("SpoTICfy API working!");
 });
 // Artistas
-app.get("/artistas", artistas.getArtistas);
+app.get("/artistas", artistas.getArtista);
 app.get("/artistas/:id", artistas.getArtista);
 app.post("/createArtista", artistas.createArtista);
 app.put("/updateArtista/:id", artistas.updateArtista);

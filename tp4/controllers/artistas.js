@@ -19,15 +19,13 @@ const getArtistas = async (_, res) => {
     */
    try {
    const [result, field] = await conn.query(
-    'SEPECT * FROM artistas'
+    'SELECT * FROM artistas'
    );
    res.send(result); 
    }
    catch(err){
     console.log(err); 
-   }
-
-   
+   }   
 };
 
 const getArtista = async (req, res) => {
@@ -97,7 +95,7 @@ const updateArtista = async (req, res) => {
         }
 };
 
-const deleteArtista = async (req, res) => {
+
     // Completar con la consulta que elimina un artista
     // Recordar que los parámetros de una consulta DELETE se encuentran en req.params
     
@@ -163,5 +161,5 @@ const artistas = {
 };
 
 export default artistas;
-}
+
 
