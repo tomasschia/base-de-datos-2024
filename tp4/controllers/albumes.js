@@ -19,11 +19,11 @@ const getAlbumes = async (_, res) => {
             ...
         ]
     */
-   const albumes = (await conn.query(`
+   const albumes = await conn.query(`
         SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista 
         FROM albumes 
         JOIN artistas ON albumes.artista = artistas.id
-    `))[0];
+    `);
     res.json(albumes);
 
 };
@@ -40,12 +40,12 @@ const getAlbum = async (req, res) => {
         }
     */
    const { id } = req.params;
-        const album = (await conn.query(`
+        const album = await conn.query(`
             SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista 
             FROM albumes 
             JOIN artistas ON albumes.artista = artistas.id 
             WHERE albumes.id = ?
-        `, [id]))[0][0];
+        `, [id]);
         res.json(album);
 };
 
@@ -100,11 +100,11 @@ const getCancionesByAlbum = async (req, res) => {
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la misma forma que getCanciones
     const { id } = req.params;
-        const canciones = (await conn.query(`
+        const canciones = await conn.query(`
             SELECT canciones.id, canciones.nombre, canciones.duracion, canciones.reproducciones 
             FROM canciones 
             WHERE album = ?
-        `, [id]))[0];
+        `, [id]);
         res.json(canciones);
 };
 

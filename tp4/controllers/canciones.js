@@ -25,14 +25,14 @@ const getCanciones = async (_, res) => {
             ...
         ]
     */
-   const canciones = (await conn.query(`
+   const canciones = await conn.query(`
             SELECT canciones.id, canciones.nombre, artistas.nombre AS nombre_artista, 
                    albumes.nombre AS nombre_album, canciones.duracion, 
                    canciones.reproducciones
             FROM canciones
             JOIN albumes ON canciones.album = albumes.id
             JOIN artistas ON albumes.artista = artistas.id
-        `))[0];
+        `);
         res.json(canciones);
 };
 
@@ -51,7 +51,7 @@ const getCancion = async (req, res) => {
         }
     */
    const { id } = req.params;
-        const cancion = (await conn.query(`
+        const cancion = await conn.query(`
             SELECT canciones.id, canciones.nombre, artistas.nombre AS nombre_artista, 
                    albumes.nombre AS nombre_album, canciones.duracion, 
                    canciones.reproducciones
@@ -59,7 +59,7 @@ const getCancion = async (req, res) => {
             JOIN albumes ON canciones.album = albumes.id
             JOIN artistas ON albumes.artista = artistas.id
             WHERE canciones.id = ?
-        `, [id]))[0][0];
+        `, [id]);
         res.json(cancion);
 };
 
@@ -77,8 +77,8 @@ const createCancion = async (req, res) => {
     // (Reproducciones se inicializa en 0)
     const { nombre, album, duracion } = req.body;
         await conn.query(`
-            INSERT INTO canciones (nombre, album, duracion, reproducciones) 
-            VALUES (?, ?, ?, 0)
+            INSERT INTO canciones (nombre, album, duracion) 
+            VALUES (?, ?, ?)
         `, [nombre, album, duracion]);
         res.status(201).json({ message: 'Cancion creada' });
 };

@@ -38,10 +38,10 @@ const getArtista = async (req, res) => {
             "nombre": "Nombre del artista"
         }
     */
-   const {id} = req.params;
+   const {id} = req.params
    try{
     const [result, fields] = await conn.query(
-        'SELECT id, nombre FROM artistas WHERE id = ?'
+        'SELECT id, nombre FROM artistas WHERE id = ?', 
         [id]
     );
     res.send(result); 
@@ -63,7 +63,7 @@ const createArtista = async (req, res) => {
    const {nombre} = req.body;
    try {
     const [result, field] = await conn.query(
-        'INSERT INTO artistas (nombre) VALUES (?)'
+        'INSERT INTO artistas (nombre) VALUES (?)',
         [nombre]); 
 
         res.send(result); 
@@ -119,7 +119,7 @@ const getAlbumesByArtista = async (req, res) => {
     // Deberían devolver los datos de la misma forma que getAlbumes
     const { id } = req.params;
     try {const [result, field] = await conn.query(
-        'SELECT * FROM albumes WHERE artista_id = ?',
+        'SELECT albumes.nombre AS nombre_album, artistas.nombre AS nombre_artista FROM albumes JOIN artistas ON artistas.id = albumes.artista WHERE artistas.id = ?', [id],
         [id]);
     res.send(result); 
 
